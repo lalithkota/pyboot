@@ -1,0 +1,49 @@
+[build-system]
+requires = ["hatchling", "versioningit"]
+build-backend = "hatchling.build"
+
+[project]
+name = "pyboot-core"
+authors = [{ name = "Lalith Kota" }]
+description = "Pyboot module for initializing core IOC aspects"
+readme = "README.md"
+requires-python = ">=3.11"
+license = "MPL-2.0"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: Mozilla Public License 2.0 (MPL 2.0)",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "pydantic-settings >=2.0.0",
+    "asyncio >=3.4.3",
+    "httpx >=0.28.1",
+    "orjson >=3.9.7",
+]
+dynamic = ["version"]
+
+[dependency-groups]
+dev = [
+    "pytest-cov",
+]
+
+[project.urls]
+Documentation = "https://lalithkota.github.io/pyboot/docs/"
+Repository = "https://github.com/lalithkota/pyboot"
+Source = "https://github.com/lalithkota/pyboot"
+
+[tool.hatch.version]
+source = "versioningit"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/pyboot/core"]
+
+[tool.versioningit]
+default-version = "0.0.0+unknown"
+
+[tool.versioningit.format]
+distance = "{next_version}.dev{distance}+{branch}.{vcs}{rev}"
+distance-dirty = "{next_version}.dev{distance}+{branch}.{vcs}{rev}.dirty"
+
+[tool.versioningit.next-version]
+method = "smallest"

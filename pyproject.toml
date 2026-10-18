@@ -1,0 +1,21 @@
+# no [project] section. This top-level package is
+# not supposed to be installed.
+
+[tool.uv]
+package = false
+
+[tool.uv.workspace]
+members = [
+    "pyboot-core",
+    "pyboot-crypto-base",
+    "pyboot-db",
+    "pyboot-fastapi",
+    "pyboot-fastapi-auth",
+]
+
+[tool.uv.sources]
+pyboot-core = { workspace = true }
+pyboot-crypto-base = { workspace = true }
+pyboot-db = { workspace = true }
+pyboot-fastapi = { workspace = true }
+pyboot-fastapi-auth = { workspace = true }

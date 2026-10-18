@@ -1,24 +1,18 @@
 exclude: |
   (?x)
-  # We don't want to mess with tool-generated files
-  .svg$|/tests/([^/]+/)?cassettes/|^.copier-answers.yml$|^.github/|
-  # Maybe reactivate this when all README files include prettier ignore tags?
+  # Excluding github ci because of templating
+  ^.github/|
+  # Maybe reactivate this when all README files have proper formatting?
   ^README\.md$|
-  # Repos using Sphinx to generate docs don't need prettying
-  ^docs/_templates/.*\.html$|
   # You don't usually want a bot to modify your legal texts
   (LICENSE.*|COPYING.*)
-default_language_version:
-  python: python3
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.4.0
+    rev: v6.0.0
     hooks:
     - id: trailing-whitespace
     - id: end-of-file-fixer
     - id: debug-statements
-    - id: fix-encoding-pragma
-      args: ["--remove"]
     - id: check-case-conflict
     - id: check-docstring-first
     - id: check-executables-have-shebangs
@@ -30,21 +24,12 @@ repos:
       - --unsafe
     - id: mixed-line-ending
       args: ["--fix=lf"]
-  - repo: https://github.com/asottile/pyupgrade
-    rev: v3.11.0
+  - repo: https://github.com/astral-sh/uv-pre-commit
+    rev: 0.13.0
     hooks:
-      - id: pyupgrade
-        args:
-        - --py3-plus
-        - --keep-runtime-typing
-  - repo: https://github.com/psf/black
-    rev: 25.1.0
-    hooks:
-      - id: black
-        args:
-        - --line-length=110
+      - id: uv-lock
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.12.7
+    rev: v0.16.10
     hooks:
       - id: ruff-check
         args:

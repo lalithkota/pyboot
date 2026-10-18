@@ -17,11 +17,12 @@ jobs:
       fail-fast: false
       matrix:
         py:
-          - "3.10"
+          - "3.11"
         os:
           - ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v7
+      # TODO: Completely refactor the following with uv
       - name: Setup python for test ${{ matrix.py }}
         uses: actions/setup-python@v4
         with:

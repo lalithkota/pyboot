@@ -1,17 +1,25 @@
-# OpenG2P FastAPI Common Libraries
-[![Pre-commit Status](https://github.com/OpenG2P/openg2p-fastapi-common/actions/workflows/pre-commit.yml/badge.svg?branch=1.1)](https://github.com/OpenG2P/openg2p-fastapi-common/actions/workflows/pre-commit.yml?query=branch%3A1.1)
-[![Build Status](https://github.com/OpenG2P/openg2p-fastapi-common/actions/workflows/test.yml/badge.svg?branch=1.1)](https://github.com/OpenG2P/openg2p-fastapi-common/actions/workflows/test.yml?query=branch%3A1.1)
-[![codecov](https://codecov.io/gh/OpenG2P/openg2p-fastapi-common/branch/1.1/graph/badge.svg)](https://codecov.io/gh/OpenG2P/openg2p-fastapi-common)
+# Pyboot
+[![Pre-commit Status](https://github.com/lalithkota/pyboot/actions/workflows/pre-commit.yml/badge.svg?branch=develop)](https://github.com/lalithkota/pyboot/actions/workflows/pre-commit.yml?query=branch%3Adevelop)
+[![Build Status](https://github.com/lalithkota/pyboot/actions/workflows/test.yml/badge.svg?branch=develop)](https://github.com/lalithkota/pyboot/actions/workflows/test.yml?query=branch%3Adevelop)
+[![codecov](https://codecov.io/gh/lalithkota/pyboot/branch/develop/graph/badge.svg)](https://codecov.io/gh/lalithkota/pyboot)
 
-This repo contains python libraries/packages that are used in different projects of openg2p. Thes packages can be used to bootstrap the APIs, config, etc.
+Pyboot is a collection of python libraries/packages that are used to bootstrap python applications of different types like API backends, database elements, background job runners etc.<br>
+Pyboot allows developers to write modular python application, that are easily extensible by implementors, and easily packagable into a larger app.<br>
+Pyboot goes with a fully object-oriented IOC approach to application development.
 
-## Available Packages
+## Available Python Modules
 
 addon | summary
 ----- | -------
-[openg2p-fastapi-common](openg2p-fastapi-common/) | Common Library
-[openg2p-fastapi-auth](openg2p-fastapi-auth/) | API Auth Library
+[pyboot-core](pyboot-core/) | Library implementing core IOC elements
+[pyboot-db](pyboot-db/) | Library implementing basic DB elements
+[pyboot-fastapi](pyboot-fastapi/) | Library implementing basic FastAPI elements
+[pyboot-fastapi-auth](pyboot-fastapi-auth/) | API Auth Library
 
-## Licenses
+## Documentation
 
-This repository is licensed under [MPL-2.0](LICENSE).
+Refer to [docs](https://lalithkota.github.io/pyboot/docs)
+
+## Acknowledgments & Licensing
+
+A few modules in this project are derived from [OpenG2P/openg2p-fastapi-common](https://github.com/OpenG2P/openg2p-fastapi-common) under the MPL 2.0 license. To maintain consistency and avoid mixed-license complexity within this codebase, all modules in this repository are distributed under the [**Mozilla Public License 2.0 (MPL 2.0)**](LICENSE).
