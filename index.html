@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pyboot</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f5f5f4;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #d6d3d1;
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a8a29e;
+        }
+    </style>
+</head>
+<body class="bg-stone-50 text-stone-800 antialiased selection:bg-amber-200 selection:text-amber-900 min-h-screen">
+    <div class="max-w-4xl mx-auto px-6 sm:px-12 md:px-16 py-10 sm:py-16 space-y-24 sm:space-y-32">
+        <section class="flex items-center justify-between border-b border-stone-200/80 pb-6">
+            <h1 class="flex items-center gap-3 text-2xl sm:text-3xl md:text-4xl font-light text-stone-900 tracking-tight leading-[1.15]">
+                    <span class="w-8 h-8 rounded-lg bg-stone-900 text-stone-50 font-bold text-xs flex items-center justify-center tracking-wider">P</span>
+                    <span class="font-semibold decoration-amber-300 decoration-4">Pyboot</span>
+                    - Work in progress.
+            </h1>
+        </section>
+
+        <section class="space-y-10 pt-6">
+            <div class="space-y-3">
+                <h2 class="text-m font-semibold tracking-widest text-amber-800 uppercase">About</h2>
+                <!-- <h2 class="text-3xl sm:text-4xl font-semibold text-stone-900 tracking-tight">Simple</h2> -->
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-stone-600 leading-relaxed font-light">
+                <p>
+                    Pyboot is a collection of python libraries & packages that are used to bootstrap python applications of different types like API backends, database elements, background job runners etc.
+                </p>
+                <p>
+                    Pyboot allows developers to write modular python application, that are easily extensible by implementors, and easily packagable into a larger app.
+                    Pyboot goes with a fully object-oriented IOC approach to application development.
+                </p>
+            </div>
+        </section>
+
+        <section class="space-y-10 pt-6">
+            <div class="space-y-3">
+                <h2 class="text-m font-semibold tracking-widest text-amber-800 uppercase hover:underline"><a href="docs" target="_blank">Documentation</a></h2>
+            </div>
+        </section>
+
+        <section class="space-y-10 pt-6">
+            <div class="space-y-3">
+                <h2 class="text-m font-semibold tracking-widest text-amber-800 uppercase hover:underline"><a href="coedcoverage" target="_blank">Code Coverage</a></h2>
+            </div>
+        </section>
+
+        <section class="space-y-10 pt-6">
+            <div class="space-y-3">
+                <h2 class="text-m font-semibold tracking-widest text-amber-800 uppercase">Licenses</h2>
+            </div>
+
+            <div class="gap-8 text-stone-600 leading-relaxed font-light">
+                <p>
+                    Pyboot's libraries, modules and related software is distributed under
+                    <a href="https://github.com/lalithkota/pyboot/blob/develop/LICENSE" class="hover:underline"><b>Mozilla Public License-2.0 (MPL-2.0)</b></a>.
+                </p>
+                <p>
+                    The documentation, website and assets are distributed under
+                    <a href="LICENSE.html" class="hover:underline"><b>Creative Commons Attribution 4.0 International (CC-BY-4.0) License</b></a>.
+                </p>
+            </div>
+        </section>
+
+        <section class="space-y-10 pb-12 scroll-mt-10">
+            <div class="space-y-3 border-t border-stone-200/80 pt-16">
+                <h2 class="text-m font-semibold tracking-widest text-amber-800 uppercase">People</h2>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-5 gap-10">
+                <div class="lg:col-span-2 space-y-6 text-stone-600 font-light">
+                    <div class="space-y-4 pt-2 text-sm font-normal text-stone-900">
+                        <div>
+                            <span class="text-xs text-stone-400 block">Owner & Maintainer</span>
+                            <a href="https://github.com/lalithkota" class="hover:underline font-medium text-amber-900">Lalith Kota</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <footer class="pt-12 flex justify-between items-center text-xs text-stone-400 border-t border-stone-200/60">
+                <p>© 2026 Pyboot. Licensed under <a href="LICENSE.html">CC BY 4.0</a>.</p>
+            </footer>
+        </section>
+
+    </div>
+
+</body>
+</html>
