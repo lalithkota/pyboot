@@ -30,6 +30,3 @@ exclude_also = [
     "raise NotImplementedError",
     "@abstractmethod",
 ]
-
-[tool.coverage.html]
-directory = "htmlcov"

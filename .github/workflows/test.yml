@@ -8,35 +8,101 @@ on:
 concurrency:
   group: check-${{ github.ref }}
   cancel-in-progress: true
+permissions:
+  contents: write
 
 jobs:
   test:
-    name: test with ${{ matrix.py }} on ${{ matrix.os }}
+    name: test with ${{ matrix.python-version }} on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        py:
+        python-version:
           - "3.11"
+          # - "3.13"
         os:
           - ubuntu-latest
+          # - windows-latest
+    env:
+      TARGET_PATH: ""
+      REF_NAME: ""
+
     steps:
-      - uses: actions/checkout@v7
-      # TODO: Completely refactor the following with uv
-      - name: Setup python for test ${{ matrix.py }}
-        uses: actions/setup-python@v4
+      - name: Checkout Source Code
+        uses: actions/checkout@v7
+
+      - name: Install uv and Set Python Version
+        uses: astral-sh/setup-uv@v10.3.3
         with:
-          python-version: ${{ matrix.py }}
-      - name: Install test requirements
+          python-version: ${{ matrix.python-version }}
+          enable-cache: true
+
+      - name: Install Dependencies
+        run: uv sync
+
+      - name: Run Package Tests with Coverage
+        shell: bash
         run: |
-          python -m pip install -r test-requirements.txt
-          python -m pip install -e ./openg2p-fastapi-common
-          python -m pip install -e ./openg2p-fastapi-auth
-      - name: Run test suite
-        run: |
-          pytest --cov-branch --cov-report=term-missing --cov=openg2p_fastapi_common --cov=tests openg2p-fastapi-common
-          pytest --cov-branch --cov-report=term-missing --cov=openg2p_fastapi_auth --cov=tests openg2p-fastapi-auth --cov-append
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v4
+          uv run coverage erase
+          for dir in pyboot-*; do
+            uv run pytest "$dir" --cov --cov-append
+          done
+
+      - name: Checkout gh-pages branch
+        if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.11'
+        uses: actions/checkout@v7
         with:
-          token: ${{ secrets.CODECOV_TOKEN }}
+          ref: gh-pages
+          path: gh-pages-branch
+
+      - name: Generate HTML Report
+        if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.11'
+        shell: bash
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            TARGET_PATH="prs/pr-${{ github.event.number }}"
+            REF_NAME="pr-${{ github.event.number }}"
+          else
+            CLEAN_BRANCH=$(echo "${{ github.ref_name }}" | tr '/' '-')
+            TARGET_PATH="branches/${CLEAN_BRANCH}"
+            REF_NAME="${CLEAN_BRANCH}"
+          fi
+
+          echo "TARGET_PATH=${TARGET_PATH}" >> $GITHUB_ENV
+          echo "REF_NAME=${REF_NAME}" >> $GITHUB_ENV
+
+          TARGET_PATH_FULL="gh-pages-branch/codecoverage/${TARGET_PATH}"
+          rm -rf "$TARGET_PATH_FULL"
+          uv run coverage html \
+            --directory "$TARGET_PATH_FULL" \
+            --title "Pyboot Coverage report - ${REF_NAME} branch. Python Version - ${{ matrix.python-version }}. OS ${{ matrix.os }}"
+
+          uv run coverage xml
+          uv run genbadge coverage -i coverage.xml -o "$TARGET_PATH_FULL/badge-coverage.svg"
+          uv run genbadge tests -i coverage.xml -o "$TARGET_PATH_FULL/badge-tests.svg"
+
+          find "$FULL_TARGET_PATH" -name "*.html" -exec sed -i \
+            's|</head>|<script src="../../nav.js" defer></script></head>|g' {} +
+
+          MANIFEST="gh-pages-branch/codecoverage/manifest.json"
+
+          jq --arg path "$TARGET_PATH" --arg label "$REF_NAME" \
+            '(.reports | map(select(.path != $path))) + [{"path": $path, "label": $label}] | {reports: .}' \
+            "$MANIFEST" > "$MANIFEST.tmp" && mv "$MANIFEST.tmp" "$MANIFEST"
+
+      - name: Publish Coverage to gh-pages Branch
+        if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.11'
+        shell: bash
+        run: |
+          cd gh-pages-branch
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add "codecoverage/${{ env.TARGET_PATH }}"
+          if ! git diff --staged --quiet; then
+            git commit -m "Code Coverage update: For ${{ env.REF_NAME }}. Ref ${{ github.repository }}@${{ github.sha }}"
+            git push origin gh-pages
+          else
+            echo "No coverage changes detected. Skipping push."
+          fi
