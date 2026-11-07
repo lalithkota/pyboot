@@ -14,13 +14,13 @@ classifiers = [
     "License :: OSI Approved :: Mozilla Public License 2.0 (MPL 2.0)",
     "Operating System :: OS Independent",
 ]
-dependencies = ["pyboot-core", "sqlalchemy >=2.0.20"]
+dependencies = ["pyboot-core", "sqlalchemy[asyncio] >=2.1.6"]
 dynamic = ["version"]
 
 [dependency-groups]
 dev = [
-    "psycopg2",
     "asyncpg",
+    "psycopg",
 ]
 
 [project.urls]
@@ -32,7 +32,7 @@ Source = "https://github.com/lalithkota/pyboot"
 source = "versioningit"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/pyboot/db"]
+packages = ["src/pyboot"]
 
 [tool.versioningit]
 default-version = "0.0.0+unknown"

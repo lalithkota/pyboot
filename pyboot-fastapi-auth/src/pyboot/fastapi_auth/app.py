@@ -11,7 +11,7 @@ from .controllers.oauth_controller import OAuthController
 
 
 class Initializer(BaseInitializer):
-    def initialize(self, **kwargs):
-        # Initialize all Services, Controllers, any utils here.
+    def initialize_components(self):
+        super().initialize_components()
         AuthController().post_init()
         OAuthController().post_init()

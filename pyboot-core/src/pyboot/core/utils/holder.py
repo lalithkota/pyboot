@@ -25,34 +25,44 @@ class Holder(Generic[_T]):
         super().__init__()
         self.value: _T | None = value
 
-    def get(self, default: _T = None) -> _T | None:
+    def get(self, default: _T | None = None) -> _T | None:
         if self.value is None:
             return default
         return self.value
 
-    def set(self, value: _T) -> Self:
+    def set(self, value: _T | None) -> Self:
         self.value = value
         return self
 
 
-class HolderNonNull(Holder, Generic[_T]):
+class HolderNonNull(Generic[_T]):
     """
     Useful holder tool for passing mutable non-null object across functions.
     Define a HolderNonNull object like:
-      a_holder = HolderNonNull[int](123)
+    ```python
+    a_holder = HolderNonNull[int](123)
+    ```
     and get using
-      a_holder.get(default=456)
+    ```python
+    a_holder.get()
+    ```
+    and set using
+    ```python
+    a_holder.set(456)
+    ```
     """
 
     def __init__(self, value: _T):
+        super().__init__()
         if value is None:
             raise ValueError("Holder value can't be null")
-        super().__init__(value=value)
+        self.value: _T = value
 
     def get(self) -> _T:
         return self.value
 
-    def set(self, value: _T) -> "Holder":
+    def set(self, value: _T) -> Self:
         if value is None:
             raise ValueError("Holder value can't be null")
-        return super().set(value)
+        self.value = value
+        return self

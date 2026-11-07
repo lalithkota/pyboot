@@ -1,17 +1,10 @@
-# no [project] section. This top-level package is
-# not supposed to be installed.
+# no [project] section. This top-level package is not supposed to be installed.
 
 [tool.uv]
 package = false
 
 [tool.uv.workspace]
-members = [
-    "pyboot-core",
-    "pyboot-crypto-base",
-    "pyboot-db",
-    "pyboot-fastapi",
-    "pyboot-fastapi-auth",
-]
+members = ["pyboot-*"]
 
 [tool.uv.sources]
 pyboot-core = { workspace = true }
@@ -19,3 +12,24 @@ pyboot-crypto-base = { workspace = true }
 pyboot-db = { workspace = true }
 pyboot-fastapi = { workspace = true }
 pyboot-fastapi-auth = { workspace = true }
+
+[tool.pytest.ini_options]
+addopts = "-ra --strict-markers"
+testpaths = ["pyboot-*"]
+
+[tool.coverage.run]
+source = ["pyboot"]
+branch = true
+
+[tool.coverage.report]
+show_missing = true
+exclude_also = [
+    "def __repr__",
+    "if __name__ == \"__main__\":",
+    "if TYPE_CHECKING:",
+    "raise NotImplementedError",
+    "@abstractmethod",
+]
+
+[tool.coverage.html]
+directory = "htmlcov"

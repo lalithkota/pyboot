@@ -3,9 +3,9 @@
 import os
 from enum import Enum
 
-from pyboot.core.config import Settings as BaseSettings
 from pydantic import model_validator
-from pydantic_settings import SettingsConfigDict
+
+from pyboot.core.config import BaseSettings
 
 from . import __version__
 
@@ -17,10 +17,6 @@ class WorkerType(Enum):
 
 
 class Settings(BaseSettings):
-    model_config = SettingsConfigDict(
-        env_prefix="core_", env_file=".env", extra="allow", env_nested_delimiter="__"
-    )
-
     host: str = "0.0.0.0"
     port: int = 8000
 
@@ -47,6 +43,8 @@ class Settings(BaseSettings):
     openapi_root_path: str = ""
     openapi_common_api_prefix: str = ""
 
+    error_response_debug: bool = False
+
     @model_validator(mode="after")
     def validate_worker_ids_and_pod_ids(self):
         self.set_current_worker_id()
@@ -71,7 +69,7 @@ class Settings(BaseSettings):
                 ]
             )
             self.worker_id = pid_arr.index(self.worker_pid) - 1
-        except Exception:
+        except Exception:  # noqa
             pass
 
     def set_current_docker_pod_id(self):

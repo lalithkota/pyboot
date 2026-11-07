@@ -3,7 +3,7 @@
 from .component import BaseComponent
 
 
-class BaseSyncService(BaseComponent):
+class BaseService(BaseComponent):
     def __init__(self, name=""):
         super().__init__(name)
 

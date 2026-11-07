@@ -7,9 +7,10 @@ from fastapi import Request
 from fastapi.datastructures import QueryParams
 from fastapi.responses import RedirectResponse
 from jose import jwt
+
+from pyboot.crypto.helper import BaseAsyncCryptoHelper
 from pyboot.fastapi.controller import BaseController
 from pyboot.fastapi.errors.http_exceptions import UnauthorizedError
-from pyboot.fastapi.utils.crypto import KeymanagerCryptoHelper
 
 from ..config import Settings
 from ..models.orm.login_provider import LoginProvider, LoginProviderTypes
@@ -24,8 +25,8 @@ _logger = logging.getLogger(_config.logging_default_logger_name)
 
 
 class OAuthController(BaseController):
-    auth_controller: AuthController = AuthController.get_cached_component()
-    keymanager_helper: KeymanagerCryptoHelper = KeymanagerCryptoHelper.get_cached_component()
+    auth_controller = AuthController.get_cached_component()
+    crypto_helper = BaseAsyncCryptoHelper.get_cached_component()
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -43,12 +44,12 @@ class OAuthController(BaseController):
         Oauth2 Redirect Url. Auth Server will redirect to this URL after the Authentication is successful.
 
         Internal Errors:
-        - Code: G2P-AUT-401. HTTP: 401. Message: Login Provider Id not received.
+        - Code: CORE-AUT-401. HTTP: 401. Message: Login Provider Id not received.
         """
         state = orjson.loads(request.query_params.get("state", "{}"))
         login_provider_id = state.get("p", None)
         if not login_provider_id:
-            raise UnauthorizedError("G2P-AUT-401", "Login Provider Id not received")
+            raise UnauthorizedError("CORE-AUT-401", "Login Provider Id not received")
 
         login_provider = await self.auth_controller.get_login_provider_db_by_id(login_provider_id)
 
@@ -105,11 +106,12 @@ class OAuthController(BaseController):
             elif auth_parameters.client_assertion_type == OauthClientAssertionType.client_secret:
                 token_request_data["client_secret"] = auth_parameters.client_secret
             try:
-                res = httpx.post(
-                    auth_parameters.token_endpoint,
-                    auth=token_auth,
-                    data=orjson.loads(orjson.dumps(token_request_data)),
-                )
+                async with httpx.AsyncClient() as hclient:
+                    res = await hclient.post(
+                        auth_parameters.token_endpoint,
+                        auth=token_auth,
+                        data=orjson.loads(orjson.dumps(token_request_data)),
+                    )
                 res.raise_for_status()
                 res = res.json()
                 return res

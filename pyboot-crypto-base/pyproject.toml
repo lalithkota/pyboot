@@ -26,7 +26,7 @@ Source = "https://github.com/lalithkota/pyboot"
 source = "versioningit"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/pyboot/crypto"]
+packages = ["src/pyboot"]
 
 [tool.versioningit]
 default-version = "0.0.0+unknown"

@@ -1,8 +1,9 @@
 from datetime import datetime, timezone
 
-from pyboot.fastapi.config import Settings as BaseSettings
-from pydantic import BaseModel, model_validator
+from pydantic import BaseModel, Field, model_validator
 from pydantic_settings import SettingsConfigDict
+
+from pyboot.fastapi.config import BaseSettings
 
 
 class ApiAuthSettings(BaseModel):
@@ -21,14 +22,14 @@ class Settings(BaseSettings):
 
     login_providers_table_enabled: bool = True
     login_providers_table_name: str = "login_providers"
-    login_providers_list: list[dict] = []
+    login_providers_list: list[dict] = Field(default_factory=list)
     login_providers_list_pkce_code_verifier: str | None = None
 
     auth_enabled: bool = True
 
-    auth_default_issuers: list[str] = []
-    auth_default_audiences: list[str] = []
-    auth_default_jwks_urls: list[str] = []
+    auth_default_issuers: list[str] = Field(default_factory=list)
+    auth_default_audiences: list[str] = Field(default_factory=list)
+    auth_default_jwks_urls: list[str] = Field(default_factory=list)
 
     auth_cookie_max_age: int | None = None
     auth_cookie_set_expires: bool = False

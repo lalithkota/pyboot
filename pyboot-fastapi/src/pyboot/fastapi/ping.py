@@ -27,6 +27,6 @@ class PingController(BaseController):
 
 
 class PingInitializer(Initializer):
-    def initialize(self, **kwargs):
+    def initialize_components(self, **kw):
         # Initialize all Services, Controllers, any utils here.
         PingController().post_init()

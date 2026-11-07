@@ -1,5 +1,5 @@
 class BaseAppException(Exception):
-    def __init__(self, *kw):
+    def __init__(self, code: str, message: str, *kw):
         super().__init__(*kw)
-        self.code = None
-        self.message = None
+        self.code = code
+        self.message = message

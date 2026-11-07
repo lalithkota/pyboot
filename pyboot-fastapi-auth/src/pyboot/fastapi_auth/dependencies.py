@@ -2,6 +2,7 @@ import httpx
 from fastapi import Request
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from jose import jwt
+
 from pyboot.fastapi.errors.http_exceptions import (
     ForbiddenError,
     InternalServerError,
@@ -53,13 +54,12 @@ class JwtBearerAuth(HTTPBearer):
         if (not iss) or (iss not in issuers_list):
             raise UnauthorizedError(message="Unauthorized. Unknown Issuer.")
 
-        if audiences_list:
-            if (
-                (not aud)
-                or (isinstance(aud, list) and not (set(audiences_list).issubset(set(aud))))
-                or (isinstance(aud, str) and aud not in audiences_list)
-            ):
-                raise UnauthorizedError(message="Unauthorized. Unknown Audience.")
+        if audiences_list and (
+            (not aud)
+            or (isinstance(aud, list) and not (set(audiences_list).issubset(set(aud))))
+            or (isinstance(aud, str) and aud not in audiences_list)
+        ):
+            raise UnauthorizedError(message="Unauthorized. Unknown Audience.")
 
         jc = jwks_cache.get()
         if not jc:
@@ -76,13 +76,14 @@ class JwtBearerAuth(HTTPBearer):
                     else iss.rstrip("/") + "/.well-known/jwks.json"
                 )
 
-                res = httpx.get(jwks_url)
+                async with httpx.AsyncClient() as hclient:
+                    res = await hclient.get(jwks_url)
                 res.raise_for_status()
                 jwks = res.json()
                 jc[iss] = jwks
             except Exception as e:
                 raise InternalServerError(
-                    code="G2P-AUT-500",
+                    code="CORE-AUT-500",
                     message=f"Something went wrong while trying to fetch Jwks. {e!r}",
                 ) from e
 
@@ -156,7 +157,7 @@ class JwtBearerAuth(HTTPBearer):
             if token:
                 try:
                     res.append(jwt.get_unverified_claims(token) if isinstance(token, str) else token)
-                except Exception:
+                except Exception:  # noqa
                     # This means one of the token being combined is not JWT or dict.
                     # Ignore such tokens
                     pass

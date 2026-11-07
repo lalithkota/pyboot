@@ -7,11 +7,13 @@ from typing import Annotated
 
 import httpx
 import orjson
-from fastapi import Depends, HTTPException, Response, status
+from fastapi import Depends, Response
 from fastapi.responses import RedirectResponse
 from jose import jwt
+
+from pyboot.db.service import BaseDbAsyncService
 from pyboot.fastapi.controller import BaseController
-from pyboot.fastapi.errors.http_exceptions import InternalServerError
+from pyboot.fastapi.errors.http_exceptions import InternalServerError, NotFoundError
 
 from ..config import Settings
 from ..dependencies import JwtBearerAuth
@@ -26,6 +28,8 @@ _logger = logging.getLogger(_config.logging_default_logger_name)
 
 
 class AuthController(BaseController):
+    db_service = BaseDbAsyncService.get_cached_component()
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.router.prefix += "/auth"
@@ -99,8 +103,8 @@ class AuthController(BaseController):
                     id=lp.id,
                     name=lp.name,
                     type=lp.type,
-                    displayName=lp.login_button_text,
-                    displayIconUrl=lp.login_button_image_url,
+                    displayName=lp.login_button_text or "",
+                    displayIconUrl=lp.login_button_image_url or "",
                 )
                 for lp in login_providers
             ],
@@ -117,16 +121,10 @@ class AuthController(BaseController):
         except Exception as e:
             _logger.exception("Login Provider fetching: Invalid Id")
             # Instead of returning None, re-raise the exception to be handled by FastAPI
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="Login Provider ID Not Found",
-            ) from e
+            raise NotFoundError(message="Login Provider ID Not Found") from e
 
         if not login_provider:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="Login Provider ID Not Found",
-            )
+            raise NotFoundError(message="Login Provider ID Not Found")
 
         if login_provider.type == LoginProviderTypes.oauth2_auth_code:
             auth_parameters = OauthProviderParameters.model_validate(login_provider.authorization_parameters)
@@ -161,11 +159,13 @@ class AuthController(BaseController):
             raise NotImplementedError()
 
     async def pkce_get_or_generate_code_verifier(self, login_provider: LoginProvider) -> str:
+        if not login_provider.authorization_parameters:
+            login_provider.authorization_parameters = {}
         code_verifier = login_provider.authorization_parameters.get("code_verifier")
         if not code_verifier:
             code_verifier = secrets.token_urlsafe(32)
             login_provider.authorization_parameters["code_verifier"] = code_verifier
-            await login_provider.update_to_db()
+            await self.db_service.update_to_db(login_provider)
         return code_verifier
 
     def pkce_update_code_challenge(self, auth_params: OauthProviderParameters):
@@ -183,8 +183,8 @@ class AuthController(BaseController):
             for lp in _config.login_providers_list:
                 filtered_lps.append({lp_key: lp_val for lp_key, lp_val in lp.items() if lp_key in lp_fields})
             return [LoginProvider(**lp) for lp in filtered_lps]
-        if await LoginProvider.table_exists_cached():
-            return await LoginProvider.get_all()
+        if await self.db_service.table_exists_cached(LoginProvider):
+            return await self.db_service.get_all_objs(LoginProvider)
         return []
 
     async def get_login_provider_db_by_id(self, id: int) -> LoginProvider:
@@ -195,10 +195,11 @@ class AuthController(BaseController):
                     return LoginProvider(
                         **{lp_key: lp_val for lp_key, lp_val in lp.items() if lp_key in lp_fields}
                     )
-            return None
-        if await LoginProvider.table_exists_cached():
-            return await LoginProvider.get_by_id(id)
-        return None
+        if await self.db_service.table_exists_cached(LoginProvider):
+            res = await self.db_service.get_obj_by_id(LoginProvider, id)
+            if res:
+                return res
+        raise ValueError("Login Provider not found")
 
     async def get_login_provider_db_by_iss(self, iss: str) -> LoginProvider:
         if _config.login_providers_list:
@@ -208,18 +209,26 @@ class AuthController(BaseController):
                     return LoginProvider(
                         **{lp_key: lp_val for lp_key, lp_val in lp.items() if lp_key in lp_fields}
                     )
-            return None
-        if await LoginProvider.table_exists_cached():
-            return await LoginProvider.get_login_provider_from_iss(iss)
-        return None
+        if await self.db_service.table_exists_cached(LoginProvider):
+            # TODO: Modify the following to a direct database query
+            # rather than getting all
+            providers = await self.db_service.get_all_objs(LoginProvider)
+            for lp in providers:
+                if lp.type == LoginProviderTypes.oauth2_auth_code:
+                    ap = lp.authorization_parameters or {}
+                    if iss in ap.get("token_endpoint", ""):
+                        return lp
+                else:
+                    raise NotImplementedError()
+        raise ValueError("Login Provider not found")
 
     async def get_oauth_validation_data(
         self,
         auth: str | AuthCredentials,
-        id_token: str = None,
-        iss: str = None,
-        provider: LoginProvider = None,
-        combine=True,
+        id_token: str | None = None,
+        iss: str | None = None,
+        provider: LoginProvider | None = None,
+        combine: bool = True,
     ) -> dict:
         access_token = auth.credentials if isinstance(auth, AuthCredentials) else auth
         if not provider:
@@ -229,10 +238,11 @@ class AuthController(BaseController):
         # TODO: Check if provider is None
         auth_params = OauthProviderParameters.model_validate(provider.authorization_parameters)
         try:
-            response = httpx.get(
-                auth_params.validate_endpoint,
-                headers={"Authorization": f"Bearer {access_token}"},
-            )
+            async with httpx.AsyncClient() as hclient:
+                response = await hclient.get(
+                    auth_params.validate_endpoint,
+                    headers={"Authorization": f"Bearer {access_token}"},
+                )
             response.raise_for_status()
             if response.headers["content-type"].startswith("application/json"):
                 res = response.json()
@@ -247,6 +257,6 @@ class AuthController(BaseController):
         except Exception as e:
             _logger.exception("Error fetching user profile.")
             raise InternalServerError(
-                "G2P-AUT-502",
+                "CORE-AUT-502",
                 f"Error fetching userinfo. {e!r}",
             ) from e

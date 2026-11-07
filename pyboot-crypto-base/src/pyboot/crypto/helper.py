@@ -1,10 +1,29 @@
-import logging
+from pyboot.core.config import BaseSettings
+from pyboot.core.service import BaseAsyncService, BaseService
 
-from ..config import Settings
-from ..service import BaseAsyncService
+_config = BaseSettings.get_config(strict=False)
 
-_config = Settings.get_config(strict=False)
-_logger = logging.getLogger(_config.logging_default_logger_name)
+
+class BaseCryptoHelper(BaseService):
+    def close(self):
+        """Closes Crypto Helper"""
+
+    def verify_jwt(self, orig_jwt: str, payload=None, **kw) -> bool:
+        """Verify the jwt given in the request, replies with boolean validity."""
+        raise NotImplementedError()
+
+    def create_jwt_token(
+        self,
+        payload,
+        include_payload=True,
+        include_certificate=False,
+        include_cert_hash=False,
+        **kw,
+    ) -> str:
+        """Creates a JWT token for the given payload"""
+        raise NotImplementedError()
+
+    # TODO: more interfaces defined as per requirement
 
 
 class BaseAsyncCryptoHelper(BaseAsyncService):

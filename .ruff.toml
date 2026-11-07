@@ -9,5 +9,9 @@ ignore = [
     "C901",  # too complex
 ]
 
+[lint.isort]
+known-first-party = ["pyboot"]
+known-third-party = ["fastapi"]
+
 [lint.per-file-ignores]
 "__init__.py" = ["F401"]

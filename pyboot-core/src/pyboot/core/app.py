@@ -1,22 +1,22 @@
-"""Module containing initialization IOC app"""
+"""Module containing initialization app"""
 
 import argparse
 import logging
 import sys
 
 from .component import BaseComponent
-from .config import Settings
+from .config import BaseSettings
 
-_config = Settings.get_config(strict=False)
+_config = BaseSettings.get_config(strict=False)
 _logger = logging.getLogger(_config.logging_default_logger_name)
 
 
-class Initializer(BaseComponent):
+class BaseInitializer(BaseComponent):
     def __init__(self, name="", **kwargs):
         super().__init__(name=name, **kwargs)
-        self.initialize()
+        self.initialize_components()
 
-    def initialize(self):
+    def initialize_components(self):
         """
         Initializes all components
         """
