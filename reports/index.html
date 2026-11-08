@@ -59,7 +59,7 @@
                         <select id="tests-branch-select" class="flex-1 bg-stone-50 border border-stone-300 text-stone-900 text-sm rounded-lg focus:ring-2 focus:ring-amber-500/20 focus:border-amber-700 p-2.5 outline-none cursor-pointer font-medium">
                             <option value="" disabled selected>Loading reports...</option>
                         </select>
-                        <button onclick="openReport('tests')" class="bg-stone-900 hover:bg-stone-800 text-stone-50 font-medium text-sm px-5 py-2.5 rounded-lg transition-colors flex items-center justify-center gap-2">
+                        <button onclick="openReport('tests-branch-select', 'tests')" class="bg-stone-900 hover:bg-stone-800 text-stone-50 font-medium text-sm px-5 py-2.5 rounded-lg transition-colors flex items-center justify-center gap-2">
                             View &rarr;
                         </button>
                     </div>
@@ -84,7 +84,7 @@
                         <select id="cov-branch-select" class="flex-1 bg-stone-50 border border-stone-300 text-stone-900 text-sm rounded-lg focus:ring-2 focus:ring-amber-500/20 focus:border-amber-700 p-2.5 outline-none cursor-pointer font-medium">
                             <option value="" disabled selected>Loading reports...</option>
                         </select>
-                        <button onclick="openReport('coverage')" class="bg-stone-900 hover:bg-stone-800 text-stone-50 font-medium text-sm px-5 py-2.5 rounded-lg transition-colors flex items-center justify-center gap-2">
+                        <button onclick="openReport('cov-branch-select', 'coverage')" class="bg-stone-900 hover:bg-stone-800 text-stone-50 font-medium text-sm px-5 py-2.5 rounded-lg transition-colors flex items-center justify-center gap-2">
                             View &rarr;
                         </button>
                     </div>
@@ -123,14 +123,13 @@
                         opt.textContent = item.label;
                         if (index === 0) opt.selected = true;
                         testsSelect.appendChild(opt);
-                        covSelect.appendChild(opt);
+                        covSelect.appendChild(opt.cloneNode(true));
                     });
                 });
         });
 
-        function openReport(suffix) {
-            if(!suffix) suffix = "";
-            const select = document.getElementById('branch-select');
+        function openReport(elementId, suffix) {
+            const select = document.getElementById(elementId);
             if (select.value) {
                 window.location.href = `${select.value}/${suffix}`;
             }
