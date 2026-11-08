@@ -358,7 +358,7 @@
     <div class="container">
         <header>
             <h1>📊 Test Results Analytics Dashboard</h1>
-            <p class="subtitle">Execution Time: 0.49s</p>
+            <p class="subtitle">Execution Time: 0.44s</p>
         </header>
         
         <!-- Charts Section -->
@@ -445,6 +445,13 @@
                         
                     
                 
+                    
+                    
+                    
+                    
+                        
+                    
+                
                 
                 <div id="performanceClassesContainer">
                 
@@ -520,11 +527,11 @@
                     <div class="class-performance">
                         <div class="class-performance-header">
                             <h3>pyboot-db.tests.test_db</h3>
-                            <div class="class-time">0.34s total</div>
+                            <div class="class-time">0.31s total</div>
                         </div>
                         <div class="class-stats">
                             <div class="class-stat">
-                                <strong>1</strong>
+                                <strong>2</strong>
                                 Total Tests
                             </div>
                             <div class="class-stat">
@@ -532,7 +539,7 @@
                                 Passed
                             </div>
                             <div class="class-stat">
-                                <strong style="color: #f56565;">0</strong>
+                                <strong style="color: #f56565;">1</strong>
                                 Failed
                             </div>
                             <div class="class-stat">
@@ -544,7 +551,7 @@
                                 Skipped
                             </div>
                             <div class="class-stat">
-                                <strong>0.337s</strong>
+                                <strong>0.154s</strong>
                                 Avg/Test
                             </div>
                         </div>
@@ -554,7 +561,7 @@
                     <div class="class-performance">
                         <div class="class-performance-header">
                             <h3>pyboot-fastapi-auth.tests.test_auth</h3>
-                            <div class="class-time">0.13s total</div>
+                            <div class="class-time">0.11s total</div>
                         </div>
                         <div class="class-stats">
                             <div class="class-stat">
@@ -578,7 +585,7 @@
                                 Skipped
                             </div>
                             <div class="class-stat">
-                                <strong>0.132s</strong>
+                                <strong>0.111s</strong>
                                 Avg/Test
                             </div>
                         </div>
@@ -612,7 +619,7 @@
                                 Skipped
                             </div>
                             <div class="class-stat">
-                                <strong>0.023s</strong>
+                                <strong>0.019s</strong>
                                 Avg/Test
                             </div>
                         </div>
@@ -645,10 +652,27 @@
                 
                     
                 
+                    
+                        
+                            
+                        
+                        
+                        
+                    
+                
                 
                 <div id="errorMessagesContainer">
                 
-                    <p style="color: #48bb78; text-align: center; padding: 20px;">✓ No errors found!</p>
+                    
+                        <div class="error-message-box">
+                            <strong>AssertionError: This test is designed to fail
+assert False</strong>
+                            <span class="error-count">1x</span>
+                            <div style="margin-top: 8px; font-size: 0.85em;">
+                                Tests affected: test_failed
+                            </div>
+                        </div>
+                    
                 
                 </div>
             </div>
@@ -673,21 +697,21 @@
                             <tr>
                                 <td><strong>test_initializer</strong></td>
                                 <td>pyboot-db.tests.test_db</td>
-                                <td class="time"><strong>0.337s</strong></td>
+                                <td class="time"><strong>0.308s</strong></td>
                                 <td><span class="status-badge passed">passed</span></td>
                             </tr>
                             
                             <tr>
                                 <td><strong>test_auth_initializer</strong></td>
                                 <td>pyboot-fastapi-auth.tests.test_auth</td>
-                                <td class="time"><strong>0.132s</strong></td>
+                                <td class="time"><strong>0.111s</strong></td>
                                 <td><span class="status-badge passed">passed</span></td>
                             </tr>
                             
                             <tr>
                                 <td><strong>test_initializer</strong></td>
                                 <td>pyboot-fastapi.tests.test_fastapi</td>
-                                <td class="time"><strong>0.023s</strong></td>
+                                <td class="time"><strong>0.019s</strong></td>
                                 <td><span class="status-badge passed">passed</span></td>
                             </tr>
                             
@@ -703,6 +727,13 @@
                                 <td>pyboot-crypto-base.tests.test_crypto</td>
                                 <td class="time"><strong>0.001s</strong></td>
                                 <td><span class="status-badge passed">passed</span></td>
+                            </tr>
+                            
+                            <tr>
+                                <td><strong>test_failed</strong></td>
+                                <td>pyboot-db.tests.test_db</td>
+                                <td class="time"><strong>0.001s</strong></td>
+                                <td><span class="status-badge failed">failed</span></td>
                             </tr>
                             
                         </tbody>
@@ -728,6 +759,13 @@
                         <tbody>
                             
                             <tr>
+                                <td><strong>test_failed</strong></td>
+                                <td>pyboot-db.tests.test_db</td>
+                                <td class="time"><strong>0.001s</strong></td>
+                                <td><span class="status-badge failed">failed</span></td>
+                            </tr>
+                            
+                            <tr>
                                 <td><strong>test_crypto_base</strong></td>
                                 <td>pyboot-crypto-base.tests.test_crypto</td>
                                 <td class="time"><strong>0.001s</strong></td>
@@ -744,21 +782,21 @@
                             <tr>
                                 <td><strong>test_initializer</strong></td>
                                 <td>pyboot-fastapi.tests.test_fastapi</td>
-                                <td class="time"><strong>0.023s</strong></td>
+                                <td class="time"><strong>0.019s</strong></td>
                                 <td><span class="status-badge passed">passed</span></td>
                             </tr>
                             
                             <tr>
                                 <td><strong>test_auth_initializer</strong></td>
                                 <td>pyboot-fastapi-auth.tests.test_auth</td>
-                                <td class="time"><strong>0.132s</strong></td>
+                                <td class="time"><strong>0.111s</strong></td>
                                 <td><span class="status-badge passed">passed</span></td>
                             </tr>
                             
                             <tr>
                                 <td><strong>test_initializer</strong></td>
                                 <td>pyboot-db.tests.test_db</td>
-                                <td class="time"><strong>0.337s</strong></td>
+                                <td class="time"><strong>0.308s</strong></td>
                                 <td><span class="status-badge passed">passed</span></td>
                             </tr>
                             
@@ -769,7 +807,7 @@
         </div>
         
         <footer>
-            Generated by <a href="https://github.com/gorkalertxundi/junit2report" target="_blank" style="color: #667eea; text-decoration: none;">junit2report</a> • 5 tests executed in 0.49s
+            Generated by <a href="https://github.com/gorkalertxundi/junit2report" target="_blank" style="color: #667eea; text-decoration: none;">junit2report</a> • 6 tests executed in 0.44s
         </footer>
     </div>
     
@@ -845,6 +883,10 @@
             
             
         
+            
+            
+            
+        
         
         // Status Distribution Chart
         const statusCtx = document.getElementById('statusChart').getContext('2d');
@@ -853,7 +895,7 @@
             data: {
                 labels: ['Passed', 'Failed', 'Errors', 'Skipped'],
                 datasets: [{
-                    data: [5, 0, 0, 0],
+                    data: [5, 1, 0, 0],
                     backgroundColor: ['#48bb78', '#f56565', '#ed8936', '#cbd5e0'],
                     borderColor: ['#38a169', '#e53e3e', '#dd6b20', '#a0aec0'],
                     borderWidth: 2,
@@ -884,7 +926,7 @@
         
         // Test Count by Class
         const classLabels = ['pyboot-core.tests.test_core','pyboot-crypto-base.tests.test_crypto','pyboot-db.tests.test_db','pyboot-fastapi-auth.tests.test_auth','pyboot-fastapi.tests.test_fastapi'];
-        const classCounts = [1,1,1,1,1];
+        const classCounts = [1,1,2,1,1];
         
         const countCtx = document.getElementById('classCountChart').getContext('2d');
         new Chart(countCtx, {
@@ -925,7 +967,7 @@
         });
         
         // Execution Time by Class
-        const classTimesData = [0.0,0.0,0.34,0.13,0.02];
+        const classTimesData = [0.0,0.0,0.31,0.11,0.02];
         
         const timeCtx = document.getElementById('classTimeChart').getContext('2d');
         new Chart(timeCtx, {
@@ -967,11 +1009,12 @@
         // Calculate class statistics for additional charts
         const classStats = {};
         [
-        { name: 'pyboot-fastapi.tests.test_fastapi', status: 'passed', time: 0.023, passed: 1, failed: 0, error: 0 },
+        { name: 'pyboot-fastapi.tests.test_fastapi', status: 'passed', time: 0.019, passed: 1, failed: 0, error: 0 },
         { name: 'pyboot-core.tests.test_core', status: 'passed', time: 0.001, passed: 1, failed: 0, error: 0 },
-        { name: 'pyboot-fastapi-auth.tests.test_auth', status: 'passed', time: 0.132, passed: 1, failed: 0, error: 0 },
+        { name: 'pyboot-fastapi-auth.tests.test_auth', status: 'passed', time: 0.111, passed: 1, failed: 0, error: 0 },
         { name: 'pyboot-crypto-base.tests.test_crypto', status: 'passed', time: 0.001, passed: 1, failed: 0, error: 0 },
-        { name: 'pyboot-db.tests.test_db', status: 'passed', time: 0.337, passed: 1, failed: 0, error: 0 }
+        { name: 'pyboot-db.tests.test_db', status: 'passed', time: 0.308, passed: 1, failed: 0, error: 0 },
+        { name: 'pyboot-db.tests.test_db', status: 'failed', time: 0.001, passed: 0, failed: 1, error: 0 }
         ].forEach(test => {
             if (!classStats[test.name]) {
                 classStats[test.name] = { count: 0, passed: 0, failed: 0, error: 0, totalTime: 0 };
@@ -1083,7 +1126,7 @@
             data: {
                 labels: ['Passed', 'Failed', 'Errors', 'Skipped'],
                 datasets: [{
-                    data: [5, 0, 0, 0],
+                    data: [5, 1, 0, 0],
                     backgroundColor: ['#48bb78', '#f56565', '#ed8936', '#cbd5e0'],
                     borderColor: ['#38a169', '#e53e3e', '#dd6b20', '#a0aec0'],
                     borderWidth: 2

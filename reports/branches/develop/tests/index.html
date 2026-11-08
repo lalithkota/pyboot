@@ -417,24 +417,24 @@
     <div class="container">
         <header>
             <h1>Pyboot Test Results Report</h1>
-            <p class="subtitle">Execution Time: 0.49s</p>
+            <p class="subtitle">Execution Time: 0.44s</p>
         </header>
         
         <div class="summary">
                 <div class="summary-card total">
                     <h3>Total Tests</h3>
-                    <div class="value">5</div>
+                    <div class="value">6</div>
                     <div class="subvalue">100%</div>
                 </div>
                 <div class="summary-card passed">
                     <h3>Passed</h3>
                     <div class="value">5</div>
-                    <div class="subvalue">100.0%</div>
+                    <div class="subvalue">83.3%</div>
                 </div>
                 <div class="summary-card failed">
                     <h3>Failed</h3>
-                    <div class="value">0</div>
-                    <div class="subvalue">0.0%</div>
+                    <div class="value">1</div>
+                    <div class="subvalue">16.7%</div>
                 </div>
                 <div class="summary-card errors">
                     <h3>Errors</h3>
@@ -451,7 +451,7 @@
         <div class="pass-rate">
             <div class="pass-rate-bar">
                 <div class="pass-rate-segment passed" style="flex: 5">5 Passed</div>
-                
+                <div class="pass-rate-segment failed" style="flex: 1">1 Failed</div>
                 
                 
             </div>
@@ -460,9 +460,9 @@
         <div class="test-results">
             <div class="filters">
                 <div class="filter-buttons">
-                    <button class="filter-btn active" onclick="filterTests('all')">All (5)</button>
+                    <button class="filter-btn active" onclick="filterTests('all')">All (6)</button>
                     <button class="filter-btn" onclick="filterTests('passed')">Passed (5)</button>
-                    <button class="filter-btn" onclick="filterTests('failed')">Failed (0)</button>
+                    <button class="filter-btn" onclick="filterTests('failed')">Failed (1)</button>
                     <button class="filter-btn" onclick="filterTests('skipped')">Skipped (0)</button>
                 </div>
                 <input type="text" id="searchInput" class="search-box" placeholder="Search by class or test name..." onkeyup="searchTests()">
@@ -492,6 +492,9 @@
             
                 
                     
+                
+                
+            
                 
                 
             
@@ -592,7 +595,7 @@
                     <span class="toggle-icon">▼</span>
                     <strong>pyboot-db.tests.test_db</strong>
                     <span class="class-summary">
-                        (1 tests)
+                        (2 tests)
                     </span>
                     
                     
@@ -601,7 +604,7 @@
                     
                     <div class="class-status-bar">
                         <div class="status-segment passed" style="flex: 1"></div>
-                        
+                        <div class="status-segment failed" style="flex: 1"></div>
                         
                         
                     </div>
@@ -625,7 +628,32 @@
                                 
                                 
                             </td>
-                            <td class="time">0.337s</td>
+                            <td class="time">0.308s</td>
+                        </tr>
+                        
+                        <tr class="failed" data-status="failed">
+                            <td>
+                                <span class="status-badge failed">failed</span>
+                            </td>
+                            <td>
+                                <strong>test_failed</strong>
+                                
+                                <div class="error-message">AssertionError: This test is designed to fail
+assert False</div>
+                                
+                                
+                                <details>
+                                    <summary style="cursor: pointer; color: #4299e1; margin-top: 5px;">Show output</summary>
+                                    <div class="test-output">def test_failed():
+&gt;       assert False, &#34;This test is designed to fail&#34;
+E       AssertionError: This test is designed to fail
+E       assert False
+
+pyboot-db/tests/test_db.py:9: AssertionError</div>
+                                </details>
+                                
+                            </td>
+                            <td class="time">0.001s</td>
                         </tr>
                         
                     </tbody>
@@ -670,7 +698,7 @@
                                 
                                 
                             </td>
-                            <td class="time">0.132s</td>
+                            <td class="time">0.111s</td>
                         </tr>
                         
                     </tbody>
@@ -715,7 +743,7 @@
                                 
                                 
                             </td>
-                            <td class="time">0.023s</td>
+                            <td class="time">0.019s</td>
                         </tr>
                         
                     </tbody>
@@ -725,7 +753,7 @@
         </div>
         
         <footer>
-            Generated by <a href="https://github.com/gorkalertxundi/junit2report" target="_blank" style="color: #667eea; text-decoration: none;">junit2report</a> • 5 tests executed in 0.49s
+            Generated by <a href="https://github.com/gorkalertxundi/junit2report" target="_blank" style="color: #667eea; text-decoration: none;">junit2report</a> • 6 tests executed in 0.44s
         </footer>
     </div>
     
