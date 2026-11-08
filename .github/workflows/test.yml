@@ -41,23 +41,7 @@ jobs:
       - name: Install Dependencies
         run: uv sync
 
-      - name: Run Package Tests with Coverage
-        shell: bash
-        run: |
-          uv run coverage erase
-          for dir in pyboot-*; do
-            uv run pytest "$dir" --cov --cov-append
-          done
-
-      - name: Checkout gh-pages branch
-        if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.11'
-        uses: actions/checkout@v7
-        with:
-          ref: gh-pages
-          path: gh-pages-branch
-
-      - name: Generate HTML Report
-        if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.11'
+      - name: Generate env vars
         shell: bash
         run: |
           if [ "${{ github.event_name }}" = "pull_request" ]; then
@@ -72,34 +56,101 @@ jobs:
           echo "TARGET_PATH=${TARGET_PATH}" >> $GITHUB_ENV
           echo "REF_NAME=${REF_NAME}" >> $GITHUB_ENV
 
-          TARGET_PATH_FULL="gh-pages-branch/codecoverage/${TARGET_PATH}"
-          rm -rf "$TARGET_PATH_FULL"
+      - name: Run tests
+        shell: bash
+        run: |
+          uv run coverage erase
+
+          EXIT_CODE_FINAL=0
+          for dir in pyboot-*; do
+            EXIT_CODE=0
+            uv run pytest --junit-xml="testreports/${dir}.xml" --cov --cov-append "${dir}" || EXIT_CODE=$?
+            if [ $EXIT_CODE -ne 0 ]; then
+              echo "::error::Pytest Failed on $dir with exit code $EXIT_CODE"
+              EXIT_CODE_FINAL=$EXIT_CODE
+            fi
+          done
+          exit $EXIT_CODE_FINAL
+
+      - name: Merge Junit xmls and generate testreport html
+        # Reports and coverage not required for all elements in matrix
+        if: always() && matrix.os == 'ubuntu-latest' && matrix.python-version == '3.11'
+        shell: bash
+        run: |
+          uv run junitparser merge \
+            --suite-name "pytest tests" \
+            --glob "testreports/pyboot-*.xml" \
+            testreports/report.xml
+          rm -rf testreports/pyboot-*.xml
+          uv run junit2report \
+            testreports/report.xml \
+            -o testreports/index.html \
+            --allow-analytics \
+            --title "Pyboot Test Results Report"
+          mv testreports/index-analytics.html testreports/analytics.html
+
+          find testreports -name "*.html" -exec sed -i \
+            's|</head>|<script src="../../../nav.js" defer></script></head>|g' {} +
+
+      - name: Generate Coverage HTML Report
+        if: always() && matrix.os == 'ubuntu-latest' && matrix.python-version == '3.11'
+        shell: bash
+        run: |
           uv run coverage html \
-            --directory "$TARGET_PATH_FULL" \
-            --title "Pyboot Coverage report - ${REF_NAME} branch. Python Version - ${{ matrix.python-version }}. OS ${{ matrix.os }}"
-
+            --directory htmlcov \
+            --title "Pyboot Coverage report - ${{ env.REF_NAME }} branch. Python Version - ${{ matrix.python-version }}. OS ${{ matrix.os }}"
           uv run coverage xml
-          uv run genbadge coverage -i coverage.xml -o "$TARGET_PATH_FULL/badge-coverage.svg"
-          uv run genbadge tests -i coverage.xml -o "$TARGET_PATH_FULL/badge-tests.svg"
 
-          find "$FULL_TARGET_PATH" -name "*.html" -exec sed -i \
-            's|</head>|<script src="../../nav.js" defer></script></head>|g' {} +
+          rm -rf htmlcov/.gitignore
 
-          MANIFEST="gh-pages-branch/codecoverage/manifest.json"
+          find htmlcov -name "*.html" -exec sed -i \
+            's|</head>|<script src="../../../nav.js" defer></script></head>|g' {} +
 
-          jq --arg path "$TARGET_PATH" --arg label "$REF_NAME" \
+      - name: Generate Badges
+        if: always() && matrix.os == 'ubuntu-latest' && matrix.python-version == '3.11'
+        shell: bash
+        run: |
+          uv run genbadge coverage -i coverage.xml -o htmlcov/badge.svg
+          uv run genbadge tests -i testreports/report.xml -o testreports/badge.svg
+
+      - name: Checkout gh-pages branch
+        if: always() && matrix.os == 'ubuntu-latest' && matrix.python-version == '3.11'
+        uses: actions/checkout@v7
+        with:
+          ref: gh-pages
+          path: gh-pages-branch
+
+      - name: Update Manifest json
+        if: always() && matrix.os == 'ubuntu-latest' && matrix.python-version == '3.11'
+        shell: bash
+        run: |
+          MANIFEST="gh-pages-branch/reports/manifest.json"
+
+          jq --arg path "${{ env.TARGET_PATH }}" --arg label "${{ env.REF_NAME }}" \
             '(.reports | map(select(.path != $path))) + [{"path": $path, "label": $label}] | {reports: .}' \
-            "$MANIFEST" > "$MANIFEST.tmp" && mv "$MANIFEST.tmp" "$MANIFEST"
+            "$MANIFEST" > "$MANIFEST.tmp"
+          mv "$MANIFEST.tmp" "$MANIFEST"
+
+      - name: Copy testreports and Coverage reports to gh-pages
+        if: always() && matrix.os == 'ubuntu-latest' && matrix.python-version == '3.11'
+        shell: bash
+        run: |
+          TARGET_PATH_FULL="gh-pages-branch/reports/${{ env.TARGET_PATH }}"
+          rm -rf "${TARGET_PATH_FULL}"
+          mkdir -p "${TARGET_PATH_FULL}"
+          mv testreports "${TARGET_PATH_FULL}/tests"
+          mv htmlcov "${TARGET_PATH_FULL}/coverage"
+          cp gh-pages-branch/reports/.branch-landing-template.html "${TARGET_PATH_FULL}/index.html"
 
       - name: Publish Coverage to gh-pages Branch
-        if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.11'
+        if: always() && matrix.os == 'ubuntu-latest' && matrix.python-version == '3.11'
         shell: bash
         run: |
           cd gh-pages-branch
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          git add "codecoverage/${{ env.TARGET_PATH }}"
+          git add reports/manifest.json "reports/${{ env.TARGET_PATH }}"
           if ! git diff --staged --quiet; then
             git commit -m "Code Coverage update: For ${{ env.REF_NAME }}. Ref ${{ github.repository }}@${{ github.sha }}"
             git push origin gh-pages

@@ -15,6 +15,7 @@ pyboot-fastapi-auth = { workspace = true }
 
 [tool.pytest.ini_options]
 addopts = "-ra --strict-markers"
+junit_logging = "no"
 testpaths = ["pyboot-*"]
 
 [tool.coverage.run]

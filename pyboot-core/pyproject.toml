@@ -26,6 +26,8 @@ dynamic = ["version"]
 dev = [
     "pytest-cov",
     "genbadge[tests,coverage]",
+    "junitparser>=5.0.3",
+    "junit2report>=1.0.1",
 ]
 
 [project.urls]

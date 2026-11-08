@@ -1,8 +1,8 @@
 # Pyboot
 [![Pre-commit Status](https://github.com/lalithkota/pyboot/actions/workflows/pre-commit.yml/badge.svg?branch=develop)](https://github.com/lalithkota/pyboot/actions/workflows/pre-commit.yml?query=branch%3Adevelop)
 [![Build Status](https://github.com/lalithkota/pyboot/actions/workflows/test.yml/badge.svg?branch=develop)](https://github.com/lalithkota/pyboot/actions/workflows/test.yml?query=branch%3Adevelop)
-[![codecoverage](https://lalithkota.github.io/pyboot/codecoverage/branches/develop/badge-coverage.svg)](https://lalithkota.github.io/pyboot/codecoverage/branches/develop)
-[![tests](https://lalithkota.github.io/pyboot/codecoverage/branches/develop/badge-tests.svg)](https://lalithkota.github.io/pyboot/codecoverage/branches/develop)
+[![tests](https://lalithkota.github.io/pyboot/reports/branches/develop/tests/badge.svg)](https://lalithkota.github.io/pyboot/reports/branches/develop/tests)
+[![codecoverage](https://lalithkota.github.io/pyboot/reports/branches/develop/coverage/badge.svg)](https://lalithkota.github.io/pyboot/reports/branches/develop/coverage)
 
 Pyboot is a collection of python libraries/packages that are used to bootstrap python applications of different types like API backends, database elements, background job runners etc.<br>
 Pyboot allows developers to write modular python application, that are easily extensible by implementors, and easily packagable into a larger app.<br>
