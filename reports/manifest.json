@@ -1,1 +1,8 @@
-{"reports":[]}
+{
+  "reports": [
+    {
+      "path": "branches/develop",
+      "label": "develop"
+    }
+  ]
+}
