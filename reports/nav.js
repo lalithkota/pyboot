@@ -20,7 +20,7 @@
       });
 
       select.onchange = (e) => (window.location.href = e.target.value);
-      h1.after(select);
+      h1.appendChild(select);
     })
     .catch((err) => console.error('Coverage nav error:', err));
 })();

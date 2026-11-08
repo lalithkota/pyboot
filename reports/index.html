@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pyboot - Code Coverage</title>
+    <title>Pyboot - Reports</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
@@ -35,7 +35,7 @@
                 <span class="w-8 h-8 rounded-lg bg-stone-900 text-stone-50 font-bold text-xs flex items-center justify-center tracking-wider">P</span>
                 <span class="font-semibold text-stone-900">Pyboot</span>
                 <span class="text-stone-300 font-light">/</span>
-                <span class="font-normal text-stone-700">Code Coverage</span>
+                <span class="font-normal text-stone-700">Reports</span>
             </h1>
             <a href="../" class="text-xs sm:text-sm font-medium text-amber-800 hover:underline flex items-center gap-1">
                 &larr; Back to Pyboot
@@ -44,22 +44,47 @@
 
         <section class="space-y-6 pt-2">
             <div class="space-y-3">
-                <h2 class="text-m font-semibold tracking-widest text-amber-800 uppercase">View Coverage</h2>
+                <h2 class="text-m font-semibold tracking-widest text-amber-800 uppercase">View Test Reports</h2>
                 <p class="text-stone-600 font-light leading-relaxed">
-                    Choose a branch or pull request below to view details.
+                    Choose a branch or pull request below to view test reports.
                 </p>
             </div>
 
             <div class="bg-white border border-stone-200/80 rounded-xl p-6 shadow-sm space-y-6 max-w-lg">
                 <div class="space-y-2">
-                    <label for="branch-select" class="block text-xs font-semibold text-stone-500 uppercase tracking-wider">
+                    <label for="tests-branch-select" class="block text-xs font-semibold text-stone-500 uppercase tracking-wider">
                         Available Branches & PRs
                     </label>
                     <div class="flex flex-col sm:flex-row gap-3">
-                        <select id="branch-select" class="flex-1 bg-stone-50 border border-stone-300 text-stone-900 text-sm rounded-lg focus:ring-2 focus:ring-amber-500/20 focus:border-amber-700 p-2.5 outline-none cursor-pointer font-medium">
+                        <select id="tests-branch-select" class="flex-1 bg-stone-50 border border-stone-300 text-stone-900 text-sm rounded-lg focus:ring-2 focus:ring-amber-500/20 focus:border-amber-700 p-2.5 outline-none cursor-pointer font-medium">
                             <option value="" disabled selected>Loading reports...</option>
                         </select>
-                        <button id="view-btn" onclick="openReport()" class="bg-stone-900 hover:bg-stone-800 text-stone-50 font-medium text-sm px-5 py-2.5 rounded-lg transition-colors flex items-center justify-center gap-2">
+                        <button onclick="openReport('tests')" class="bg-stone-900 hover:bg-stone-800 text-stone-50 font-medium text-sm px-5 py-2.5 rounded-lg transition-colors flex items-center justify-center gap-2">
+                            View &rarr;
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="space-y-6 pt-2">
+            <div class="space-y-3">
+                <h2 class="text-m font-semibold tracking-widest text-amber-800 uppercase">View Coverage Reports</h2>
+                <p class="text-stone-600 font-light leading-relaxed">
+                    Choose a branch or pull request below to view code coverage details.
+                </p>
+            </div>
+
+            <div class="bg-white border border-stone-200/80 rounded-xl p-6 shadow-sm space-y-6 max-w-lg">
+                <div class="space-y-2">
+                    <label for="cov-branch-select" class="block text-xs font-semibold text-stone-500 uppercase tracking-wider">
+                        Available Branches & PRs
+                    </label>
+                    <div class="flex flex-col sm:flex-row gap-3">
+                        <select id="cov-branch-select" class="flex-1 bg-stone-50 border border-stone-300 text-stone-900 text-sm rounded-lg focus:ring-2 focus:ring-amber-500/20 focus:border-amber-700 p-2.5 outline-none cursor-pointer font-medium">
+                            <option value="" disabled selected>Loading reports...</option>
+                        </select>
+                        <button onclick="openReport('coverage')" class="bg-stone-900 hover:bg-stone-800 text-stone-50 font-medium text-sm px-5 py-2.5 rounded-lg transition-colors flex items-center justify-center gap-2">
                             View &rarr;
                         </button>
                     </div>
@@ -75,16 +100,19 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const select = document.getElementById('branch-select');
-            const reportList = document.getElementById('report-list');
+            const testsSelect = document.getElementById('tests-branch-select');
+            const covSelect = document.getElementById('cov-branch-select');
 
             fetch('manifest.json')
                 .then((res) => res.json())
                 .then((data) => {
-                    select.innerHTML = '';
+                    testsSelect.innerHTML = '';
+                    covSelect.innerHTML = '';
 
                     if (!data.reports || data.reports.length === 0) {
-                        select.innerHTML = '<option disabled>No reports found in manifest</option>';
+                        const noreportHtml = '<option disabled>No reports found in manifest</option>';
+                        testsSelect.innerHTML = noreportHtml;
+                        covSelect.innerHTML = noreportHtml;
                         return;
                     }
 
@@ -94,15 +122,17 @@
                         opt.value = targetUrl;
                         opt.textContent = item.label;
                         if (index === 0) opt.selected = true;
-                        select.appendChild(opt);
+                        testsSelect.appendChild(opt);
+                        covSelect.appendChild(opt);
                     });
                 });
         });
 
-        function openReport() {
+        function openReport(suffix) {
+            if(!suffix) suffix = "";
             const select = document.getElementById('branch-select');
             if (select.value) {
-                window.location.href = select.value;
+                window.location.href = `${select.value}/${suffix}`;
             }
         }
     </script>
