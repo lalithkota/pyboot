@@ -1,9 +1,12 @@
 name: Test and coverage
 
 on:
-  pull_request:
   push:
+    paths:
+      - 'pyboot-*/**/*.py'
   workflow_dispatch:
+  # Turning off due to Cybersec reasons. Turn on again after figuring this out.
+  # pull_request:
 
 concurrency:
   group: check-${{ github.ref }}
