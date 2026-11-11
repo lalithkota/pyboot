@@ -44,47 +44,22 @@
 
         <section class="space-y-6 pt-2">
             <div class="space-y-3">
-                <h2 class="text-m font-semibold tracking-widest text-amber-800 uppercase">View Test Reports</h2>
+                <h2 class="text-m font-semibold tracking-widest text-amber-800 uppercase">View Reports</h2>
                 <p class="text-stone-600 font-light leading-relaxed">
-                    Choose a branch or pull request below to view test reports.
+                    Choose a branch or pull request below to view test reports or coverage details.
                 </p>
             </div>
 
             <div class="bg-white border border-stone-200/80 rounded-xl p-6 shadow-sm space-y-6 max-w-lg">
                 <div class="space-y-2">
-                    <label for="tests-branch-select" class="block text-xs font-semibold text-stone-500 uppercase tracking-wider">
+                    <label for="branch-select" class="block text-xs font-semibold text-stone-500 uppercase tracking-wider">
                         Available Branches & PRs
                     </label>
                     <div class="flex flex-col sm:flex-row gap-3">
-                        <select id="tests-branch-select" class="flex-1 bg-stone-50 border border-stone-300 text-stone-900 text-sm rounded-lg focus:ring-2 focus:ring-amber-500/20 focus:border-amber-700 p-2.5 outline-none cursor-pointer font-medium">
+                        <select id="branch-select" class="flex-1 bg-stone-50 border border-stone-300 text-stone-900 text-sm rounded-lg focus:ring-2 focus:ring-amber-500/20 focus:border-amber-700 p-2.5 outline-none cursor-pointer font-medium">
                             <option value="" disabled selected>Loading reports...</option>
                         </select>
-                        <button onclick="openReport('tests-branch-select', 'tests')" class="bg-stone-900 hover:bg-stone-800 text-stone-50 font-medium text-sm px-5 py-2.5 rounded-lg transition-colors flex items-center justify-center gap-2">
-                            View &rarr;
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section class="space-y-6 pt-2">
-            <div class="space-y-3">
-                <h2 class="text-m font-semibold tracking-widest text-amber-800 uppercase">View Coverage Reports</h2>
-                <p class="text-stone-600 font-light leading-relaxed">
-                    Choose a branch or pull request below to view code coverage details.
-                </p>
-            </div>
-
-            <div class="bg-white border border-stone-200/80 rounded-xl p-6 shadow-sm space-y-6 max-w-lg">
-                <div class="space-y-2">
-                    <label for="cov-branch-select" class="block text-xs font-semibold text-stone-500 uppercase tracking-wider">
-                        Available Branches & PRs
-                    </label>
-                    <div class="flex flex-col sm:flex-row gap-3">
-                        <select id="cov-branch-select" class="flex-1 bg-stone-50 border border-stone-300 text-stone-900 text-sm rounded-lg focus:ring-2 focus:ring-amber-500/20 focus:border-amber-700 p-2.5 outline-none cursor-pointer font-medium">
-                            <option value="" disabled selected>Loading reports...</option>
-                        </select>
-                        <button onclick="openReport('cov-branch-select', 'coverage')" class="bg-stone-900 hover:bg-stone-800 text-stone-50 font-medium text-sm px-5 py-2.5 rounded-lg transition-colors flex items-center justify-center gap-2">
+                        <button onclick="openReport()" class="bg-stone-900 hover:bg-stone-800 text-stone-50 font-medium text-sm px-5 py-2.5 rounded-lg transition-colors flex items-center justify-center gap-2">
                             View &rarr;
                         </button>
                     </div>
@@ -100,19 +75,16 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const testsSelect = document.getElementById('tests-branch-select');
-            const covSelect = document.getElementById('cov-branch-select');
+            const select = document.getElementById('branch-select');
 
             fetch('manifest.json')
                 .then((res) => res.json())
                 .then((data) => {
-                    testsSelect.innerHTML = '';
-                    covSelect.innerHTML = '';
+                    select.innerHTML = '';
 
                     if (!data.reports || data.reports.length === 0) {
                         const noreportHtml = '<option disabled>No reports found in manifest</option>';
-                        testsSelect.innerHTML = noreportHtml;
-                        covSelect.innerHTML = noreportHtml;
+                        select.innerHTML = noreportHtml;
                         return;
                     }
 
@@ -122,16 +94,15 @@
                         opt.value = targetUrl;
                         opt.textContent = item.label;
                         if (index === 0) opt.selected = true;
-                        testsSelect.appendChild(opt);
-                        covSelect.appendChild(opt.cloneNode(true));
+                        select.appendChild(opt);
                     });
                 });
         });
 
-        function openReport(elementId, suffix) {
-            const select = document.getElementById(elementId);
+        function openReport() {
+            const select = document.getElementById('branch-select');
             if (select.value) {
-                window.location.href = `${select.value}/${suffix}`;
+                window.location.href = select.value;
             }
         }
     </script>
